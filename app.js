@@ -11,6 +11,7 @@ var users = require("./routes/users");
 var log = require("./routes/log");
 
 var config = require("./config");
+var Mongo = require("./mongo");
 var Humidity = require("./humidity");
 
 
@@ -18,6 +19,9 @@ var app = express();
 
 // custom entries
 app.set("config", config);
+
+var mongo = new Mongo(app);
+app.set("mongo", mongo);
 
 var humidity = new Humidity(app);
 app.set("humidity", humidity);
@@ -31,8 +35,10 @@ app.set("view engine", "jade");
 //app.use(favicon(__dirname + "/public/favicon.ico"));
 app.use(logger("dev"));
 app.use(bodyParser.json());
+//noinspection JSUnresolvedFunction
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+//noinspection JSUnresolvedFunction
 app.use(require("stylus").middleware(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -52,7 +58,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get("env") === "development") {
-  app.use(function(err, req, res, next) {
+  app.use(function(err, req, res) {
     res.status(err.status || 500);
     res.render("error", {
       message: err.message,
@@ -63,7 +69,7 @@ if (app.get("env") === "development") {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   res.status(err.status || 500);
   res.render("error", {
     message: err.message,

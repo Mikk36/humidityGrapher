@@ -7,6 +7,7 @@ var SerialPort = require("serialport").SerialPort;
 class Humidity {
   constructor(app) {
     this.app = app;
+    this.mongo = this.app.get("mongo");
     this.log = [];
 
     var self = this;
@@ -18,10 +19,7 @@ class Humidity {
   }
 
   logData(temperature, relativeHumidity) {
-    if (this.log.length >= 3600*24*2) {
-      this.log.shift();
-    }
-    this.log.push(new LogEntry(new Date(), temperature, relativeHumidity));
+    this.mongo.logHumidity(0, temperature, relativeHumidity);
   }
 
   getData() {
