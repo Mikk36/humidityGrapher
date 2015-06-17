@@ -46,6 +46,7 @@ class Mongo {
     setObject["temperature." + currentSecond] = temperature;
     setObject["humidity." + currentSecond] = humidity;
 
+    //noinspection JSDeprecatedSymbols,JSCheckFunctionSignatures
     collection.update({
       sensorID: sensor,
       time: currentTimeMinute
