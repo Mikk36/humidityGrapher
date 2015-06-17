@@ -4,9 +4,16 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send(req.app.get("humidity").getData());
+/* GET log */
+router.get('/', function (req, res, next) {
+  var fromDate = new Date();
+  fromDate.setHours(fromDate.getHours() - 1);
+  var from = new Date(fromDate);
+  var to = new Date();
+  req.app.get("mongo").getHumidityPromise(0, from, to).then(function (data) {
+    res.send(data);
+  });
+  //res.send(req.app.get("humidity").getData());
 });
 
 module.exports = router;

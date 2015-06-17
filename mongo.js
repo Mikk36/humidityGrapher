@@ -8,9 +8,25 @@ class Mongo {
   constructor(app) {
     this.app = app;
     var self = this;
-    MongoClient.connect(app.get("config").mongoDB, function(err, db) {
+    MongoClient.connect(app.get("config").mongoDB, function (err, db) {
       util.log("MongoDB connected");
       self.db = db;
+      self.createDatabaseListeners();
+    });
+  }
+
+  createDatabaseListeners() {
+    this.db.on("error", function () {
+      util.log("Database error");
+    });
+    this.db.on("reconnect", function () {
+      util.log("Database reconnect");
+    });
+    this.db.on("timeout", function () {
+      util.log("Database timeout");
+    });
+    this.db.on("close", function () {
+      util.log("Database close");
     });
   }
 
@@ -45,8 +61,26 @@ class Mongo {
     });
   }
 
-  getHumidity(sensor, from, to) {
-
+  getHumidityPromise(sensor, from, to) {
+    var self = this;
+    return new Promise(function (resolve, reject) {
+      var collection = self.db.collection("dataLog");
+      collection.find({
+        sensorID: sensor,
+        time: {
+          $gte: from,
+          $lte: to
+        }
+      }).sort({
+        time: 1
+      }).toArray(function (err, documents) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(documents);
+        }
+      });
+    });
   }
 }
 

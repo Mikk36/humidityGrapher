@@ -8,22 +8,16 @@ class Humidity {
   constructor(app) {
     this.app = app;
     this.mongo = this.app.get("mongo");
-    this.log = [];
 
     var self = this;
     var serial = require("serialport");
     serial.list(function(err, ports) {
       self.createSerial(err, ports);
     });
-
   }
 
   logData(temperature, relativeHumidity) {
     this.mongo.logHumidity(0, temperature, relativeHumidity);
-  }
-
-  getData() {
-    return this.log;
   }
 
   createSerial(err, ports) {
@@ -58,24 +52,11 @@ class Humidity {
     var self = this;
     this.serialPort.on("data", function(data) {
       var dataString = data.toString().trim();
-      //util.log("data: \"" + dataString + "\"");
       var dataSplit = dataString.split(" | ");
       var temperature = parseFloat(dataSplit[0]);
       var relativeHumidity = parseFloat(dataSplit[1]);
-      //util.log("Temperature: " + temperature);
-      //util.log("Relative Humidity: " + relativeHumidity);
       self.logData(temperature, relativeHumidity);
     });
-  }
-
-
-}
-
-class LogEntry {
-  constructor(time, temperature, relativeHumidity) {
-    this.time = time;
-    this.temperature = temperature;
-    this.relativeHumidity = relativeHumidity;
   }
 }
 
