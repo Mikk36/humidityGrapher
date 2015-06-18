@@ -66,17 +66,21 @@ class Mongo {
     });
   }
 
-  getHumidityPromise(sensor, from, to) {
+  getHumidityPromise(sensor, from, to, detailed) {
     var self = this;
     return new Promise(function (resolve, reject) {
       var collection = self.db.collection("dataLog");
+      var projection = null;
+      if (!detailed) {
+        projection = {sensorID: 1, time: 1, entryCount: 1, temperatureSum: 1, humiditySum: 1};
+      }
       collection.find({
         sensorID: sensor,
         time: {
           $gte: from,
           $lte: to
         }
-      }).sort({
+      }, projection).sort({
         time: 1
       }).toArray(function (err, documents) {
         if (err) {
