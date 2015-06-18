@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="https://www.google.com/jsapi?autoload={'modules': [{'name':'visualization', 'version':'1.1', 'packages': ['line', 'corechart']}]}")
+  body
+    div#chart
+    script.
+      google.load("visualization", "1.1", {packages: ["line", "corechart"]});
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var chart;
+        var div = document.getElementById("chart");
+
+        var options = {
+          chart: {
+            title: "Temperature and humidity over the past week"
+          },
+          width: 1500,
+          height: 500,
+          series: {
+            0: {axis: "Temperature"},
+            1: {axis: "Humidity"}
+          },
+          axes: {
+            y: {
+              Temperature: {label: "Temperature \u00B0"},
+              Humidity: {label: "Humidity %"}
+            }
+          },
+          explorer: {}
+        };
+
+        var data = new google.visualization.DataTable();
+        data.addColumn("datetime", "Time");
+        data.addColumn("number", "Average temperature per minute");
+        data.addColumn("number", "Average humidity per minute");
+
+        var dataRaw = JSON.parse('!{data}');
+        dataRaw.forEach(function (element) {
+          data.addRow([
+            new Date(element.time),
+            element.temperature,
+            element.humidity
+          ]);
+        });
+
+        chart = new google.charts.Line(div);
+        chart.draw(data, options);
+      }
