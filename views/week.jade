@@ -3,7 +3,7 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src="https://www.google.com/jsapi?autoload={'modules': [{'name':'visualization', 'version':'1.1', 'packages': ['line', 'corechart']}]}")
+    script(src="https://www.google.com/jsapi?autoload={'modules': [{'name':'visualization', 'version':'1.0', 'packages': ['line', 'corechart']}]}")
   body
     div#chart
     script.
@@ -16,9 +16,8 @@ html
 
         var options = {
           chart: {title: "Temperature and humidity over the past week"},
-          curveType: "function",
           legend: {position: 'bottom'},
-          width: 1500,
+          width: 1000,
           height: 500,
           series: {
             0: {axis: "Temperature"},
