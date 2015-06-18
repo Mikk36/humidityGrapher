@@ -4,7 +4,6 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET log */
 router.get('/', function (req, res) {
   var from = new Date();
   from.setHours(from.getHours() - 1);
@@ -12,7 +11,6 @@ router.get('/', function (req, res) {
   req.app.get("mongo").getHumidityPromise(0, from, to).then(function (data) {
     res.send(data);
   });
-  //res.send(req.app.get("humidity").getData());
 });
 
 router.get("/minuteAverageWeek", function (req, res) {

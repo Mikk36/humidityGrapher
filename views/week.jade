@@ -15,9 +15,9 @@ html
         var div = document.getElementById("chart");
 
         var options = {
-          chart: {
-            title: "Temperature and humidity over the past week"
-          },
+          chart: {title: "Temperature and humidity over the past week"},
+          curveType: "function",
+          legend: {position: 'bottom'},
           width: 1500,
           height: 500,
           series: {
@@ -29,14 +29,13 @@ html
               Temperature: {label: "Temperature \u00B0"},
               Humidity: {label: "Humidity %"}
             }
-          },
-          explorer: {}
+          }
         };
 
         var data = new google.visualization.DataTable();
         data.addColumn("datetime", "Time");
-        data.addColumn("number", "Average temperature per minute");
-        data.addColumn("number", "Average humidity per minute");
+        data.addColumn("number", "Average temperature per 10 minutes");
+        data.addColumn("number", "Average humidity per 10 minutes");
 
         var dataRaw = JSON.parse('!{data}');
         dataRaw.forEach(function (element) {
