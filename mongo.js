@@ -9,6 +9,10 @@ class Mongo {
     this.app = app;
     var self = this;
     MongoClient.connect(app.get("config").mongoDB, function (err, db) {
+      if (err) {
+        util.log("Error: " + err.message);
+        return;
+      }
       util.log("MongoDB connected");
       self.db = db;
       self.createDatabaseListeners();
