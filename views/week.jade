@@ -3,11 +3,11 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src="https://www.google.com/jsapi?autoload={'modules': [{'name':'visualization', 'version':'1.0', 'packages': ['line', 'corechart']}]}")
+    script(src="https://www.google.com/jsapi")
   body
     div#chart
     script.
-      google.load("visualization", "1.1", {packages: ["line", "corechart"]});
+      google.load("visualization", "1", {packages: ["corechart"]});
       google.setOnLoadCallback(drawChart);
 
       function drawChart() {
@@ -15,36 +15,65 @@ html
         var div = document.getElementById("chart");
 
         var options = {
-          chart: {title: "Temperature and humidity over the past week"},
-          legend: {position: 'bottom'},
-          width: 950,
-          height: 400,
+          title: "Temperature and humidity over the past week",
+          height: 600,
           series: {
-            0: {axis: "Temperature"},
-            1: {axis: "Humidity"}
+            0: {targetAxisIndex: 0},
+            1: {targetAxisIndex: 1},
+            2: {targetAxisIndex: 0}
           },
-          axes: {
-            y: {
-              Temperature: {label: "Temperature \u00B0"},
-              Humidity: {label: "Humidity %"}
+          vAxes: {
+            0: {
+              title: "Temperature C\u00B0",
+              format: "# C\u00B0"
+            },
+            1: {
+              title: "Humidity %",
+              format: "#' %'"
             }
-          }
+          },
+          curveType: "function",
+          focusTarget: "category",
+          colors: ["#dc3912", "#3366cc", "#109618"]
         };
 
         var data = new google.visualization.DataTable();
         data.addColumn("datetime", "Time");
-        data.addColumn("number", "C\u00B0 / 10 min");
-        data.addColumn("number", "% / 10 min");
+        data.addColumn("number", "Temperature 10 min avg");
+        data.addColumn("number", "Humidity 10 min avg");
+        data.addColumn("number", "Dew Point");
 
         var dataRaw = JSON.parse('!{data}');
+        var dewPoint;
+        var dewPointK;
         dataRaw.forEach(function (element) {
+          dewPointK = Math.log(element.humidity / 100) + (17.62 * element.temperature) / (243.12 + element.temperature);
+          dewPoint = 243.12 * dewPointK / (17.62 - dewPointK);
           data.addRow([
             new Date(element.time),
             element.temperature,
-            element.humidity
+            element.humidity,
+            dewPoint
           ]);
         });
 
-        chart = new google.charts.Line(div);
+        var timeFormatter = new google.visualization.DateFormat({
+          pattern: "EEEE dd.MM.yyyy HH:mm"
+        });
+        var temperatureFormatter = new google.visualization.NumberFormat({
+          fractionDigits: 1,
+          suffix: " C\u00B0"
+        });
+        var humidityFormatter = new google.visualization.NumberFormat({
+          fractionDigits: 1,
+          suffix: " %"
+        });
+
+        timeFormatter.format(data, 0);
+        temperatureFormatter.format(data, 1);
+        humidityFormatter.format(data, 2);
+        temperatureFormatter.format(data, 3);
+
+        chart = new google.visualization.LineChart(div);
         chart.draw(data, options);
       }
