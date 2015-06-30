@@ -58,3 +58,10 @@ Desktop.ini
 config.js
 
 public/bower_components
+
+
+dist
+test/temp
+bower_components
+.tmp
+test/bower_components/

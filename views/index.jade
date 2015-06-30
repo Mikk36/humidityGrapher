@@ -1,6 +1,74 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  canvas#humidityChart(width=800,height=400)
+  span#browser-sync-binding
+  template#app(is="dom-bind")
+    paper-drawer-panel#paperDrawerPanel
+      div(drawer)
+        paper-toolbar#drawerToolbar
+          span.paper-font-title Menu
+        paper-menu.list(attr-for-selected="data-route", selected="{{route}}", on-iron-select="onMenuSelect")
+          a(data-route="home", href="/")
+            iron-icon(icon="home")
+            span Home
+          a(data-route="users", href="/users")
+            iron-icon(icon="info")
+            span Users
+          a(data-route="contact", href="/contact")
+            iron-icon(icon="mail")
+            span Contact
+      paper-header-panel(main, mode="waterfall-tall")
+        paper-toolbar#mainToolbar
+          paper-icon-button#paperToggle(icon="menu", paper-drawer-toggle)
+          span.flex
+          paper-icon-button(icon="refresh")
+          paper-icon-button(icon="search")
+          div.middle.paper-font-display2.app-name=title
+          div.bottom.title
+        div.content
+          iron-pages(attr-for-selected="data-route", selected="{{route}}")
+            section(data-route="home")
+              paper-material(elevation="1")
+                my-greeting
+                p.paper-font-subhead You now have:
+                my-list
+                p.paper-font-body2
+                  | Looking for more Web App layouts? Check out our&#32;
+                  a(href="https://github.com/PolymerElements/app-layout-templates") layouts
+                  |  collection. You can also&#32;
+                  a(href="http://polymerelements.gihub.io/app-layout-templates") preview
+                  |  them live.
+              paper-material(elevation="1")
+                p.paper-font-body2 This is another card.
+              paper-material.paper-font-body2(elevation="1")
+                h1#license License
+                p Everything in this repo is BSD style license unless otherwise specified.
+                p Copyright (c) 2015 The Polymer Authors. All rights reserved.
+                p Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+                ul
+                  li Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+                  li Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+                  li Neither the name of Google Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+                p THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+            section(data-route="users")
+              paper-material(elevation="1")
+                h2.paper-font-display2 Users
+                p This is the users section
+                a(href="/users/Rob") Rob
+            section(data-route="user-info")
+              paper-material(elevation="1")
+                h2.paper-font-display2
+                  | User:
+                  span {{params.name}}
+                div
+                  | This is
+                  span {{params.name}}
+                  | 's section
+            section(data-route="contact")
+              paper-material(elevation="1")
+                h2.paper-font-display2 Contact
+                p This is the contact section
+      paper-toast#caching-complete(duration="6000", text="Caching complete! This app will work offline.")
+      platinum-sw-register(auto-register, clients-claim, skip-waiting, on-service-worker-installed="displayInstalledToast")
+        platinum-sw-cache(default-cache-strategy="networkFirst", precache-file="precache.json")
+
