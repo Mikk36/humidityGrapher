@@ -23,9 +23,10 @@ app.set("config", config);
 var mongo = new Mongo(app);
 app.set("mongo", mongo);
 
-var humidity = new Humidity(app);
-app.set("humidity", humidity);
-
+if (config.useSerial) {
+  var humidity = new Humidity(app);
+  app.set("humidity", humidity);
+}
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
