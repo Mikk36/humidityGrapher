@@ -2,12 +2,12 @@ doctype html
 html
   head
     title= title
-    script(src="https://www.google.com/jsapi")
+    script(src="https://www.gstatic.com/charts/loader.js")
   body
     div#chart
     script.
-      google.load("visualization", "1", {packages: ["corechart"]});
-      google.setOnLoadCallback(drawChart);
+      google.charts.load("visualization", "current", {packages: ["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
         var chart;
@@ -28,7 +28,9 @@ html
             },
             1: {
               title: "Humidity %",
-              format: "#' %'"
+              format: "#' %'",
+              minValue: 0,
+              maxValue: 100
             }
           },
           curveType: "function",
@@ -38,8 +40,8 @@ html
 
         var data = new google.visualization.DataTable();
         data.addColumn("datetime", "Time");
-        data.addColumn("number", "Temperature 10 min avg");
-        data.addColumn("number", "Humidity 10 min avg");
+        data.addColumn("number", "Temperature 30 min avg");
+        data.addColumn("number", "Humidity 30 min avg");
         data.addColumn("number", "Dew Point");
 
         var dataRaw = JSON.parse('!{data}');

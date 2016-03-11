@@ -20,7 +20,7 @@ router.get("/week", function (req, res) {
       smoothing.count++;
       smoothing.temperature += element.temperatureSum / element.entryCount;
       smoothing.humidity += element.humiditySum / element.entryCount;
-      if (element.time.getMinutes() % 10 === 0 || index === array.length - 1) {
+      if (element.time.getMinutes() % 30 === 0 || index === array.length - 1) {
         rows.push({
           time: element.time,
           temperature: smoothing.temperature / smoothing.count,
@@ -32,7 +32,7 @@ router.get("/week", function (req, res) {
       }
     });
     res.render("week", {
-      title: "1 week (10 minute average)",
+      title: "1 week (30 minute average)",
       data: JSON.stringify(rows)
     });
   });

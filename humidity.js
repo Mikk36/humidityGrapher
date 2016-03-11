@@ -2,7 +2,7 @@
  * Created by mikk on 12.06.2015.
  */
 var util = require("util");
-var SerialPort = require("serialport").SerialPort;
+//var SerialPort = require("serialport").SerialPort;
 
 class Humidity {
   constructor(app) {

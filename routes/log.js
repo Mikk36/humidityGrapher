@@ -13,6 +13,22 @@ router.get('/', function (req, res) {
   });
 });
 
+router.get('/current', function (req, res) {
+  var minutes = 3;
+  var from = new Date();
+  from.setMinutes(from.getMinutes() - minutes);
+  var to = new Date();
+  req.app.get("mongo").getHumidityPromise(0, from, to).then(function (data) {
+    console.log(JSON.stringify(data));
+    var sums = {temp: 0, humidity: 0};
+    data.forEach(function (element) {
+      sums.temp += element.temperatureSum / element.entryCount / data.length;
+      sums.humidity += element.humiditySum / element.entryCount / data.length;
+    });
+    res.send(sums);
+  });
+});
+
 router.get("/minuteAverageWeek", function (req, res) {
   var from = new Date();
   from.setDate(from.getDate() - 7);
